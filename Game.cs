@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Threading;
+using SMG_Test.Data;
+using SMG_Test.Data.Models;
 
 namespace SMG_Test
 {
@@ -9,20 +11,20 @@ namespace SMG_Test
     private static Random _rand = new Random();
     private IDisplayer _displayer;
     private IReader _reader;
+    private IGameContext _context;
 
-    public Game(IDisplayer displayer, IReader reader)
+    public Game(IDisplayer displayer, IReader reader, IGameContext context)
     {
       _displayer = displayer;
       _reader = reader;
+      _context = context;
     }
 
     public void Run()
     {
-
-      bool continueGame = true;
-
       _displayer.PrintLine("---Rock Paper Scissors---");
 
+      bool continueGame = true;
       while (continueGame)
       {
         PlayRound();
@@ -74,6 +76,16 @@ namespace SMG_Test
 
       // decide round winner
       GameResult result = CalculateResult(playerMove, computerMove);
+
+      // save round to db
+      var record = new Round
+      {
+        PlayerMove = playerMove,
+        ComputerMove = computerMove,
+        GameResult = result
+      };
+      _context.SaveResult(record);
+
       if (result == GameResult.Tie)
         _displayer.PrintLine("Tie!");
       else if (result == GameResult.PlayerWin)
