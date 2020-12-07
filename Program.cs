@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace SMG_Test
 {
@@ -6,52 +7,43 @@ namespace SMG_Test
   {
     static void Main(string[] args)
     {
-      var rand = new Random();
       Move playerMove;
       Move computerMove;
+      bool playerGoesFirst = Game.SelectFirstPlayer() == PlayerType.Human;
 
       Console.WriteLine("---Rock Paper Scissors---\n");
 
-      Console.WriteLine("Player, choose your move:\n");
-      // print move choices
-      string composite = "{0,-20} ({1})";
-      Console.WriteLine(string.Format(composite, "Rock", 1));
-      Console.WriteLine(string.Format(composite, "Paper", 2));
-      Console.WriteLine(string.Format(composite, "Scissors", 3));
-      // log chosen move
-      playerMove = (Move)int.Parse(Console.ReadLine()); // put in function
-      Console.WriteLine($"Player chose {playerMove}!");
-      computerMove = (Move)rand.Next(0, 3); // put in function
-      Console.WriteLine($"Computer chose {computerMove}!");
-      // decide round winner
-      if (playerMove == computerMove)
-        Console.WriteLine("Tie!");
-      // player plays rock
-      else if (playerMove == Move.Rock)
+      if (playerGoesFirst)
       {
-        if (computerMove == Move.Scissors)
-          System.Console.WriteLine("Player wins!");
-        else
-          System.Console.WriteLine("Computer wins!");
-      }
-      // player plays paper
-      else if (playerMove == Move.Paper)
-      {
-        if (computerMove == Move.Rock)
-          System.Console.WriteLine("Player wins!");
-        else
-          System.Console.WriteLine("Computer wins!");
-      }
-      // player plays scissors
-      else if (playerMove == Move.Scissors)
-      {
-        if (computerMove == Move.Paper)
-          System.Console.WriteLine("Player wins!");
-        else
-          System.Console.WriteLine("Computer wins!");
+        Console.WriteLine("Player goes first!");
+
+        playerMove = Game.GetPlayerMove();
+        Console.WriteLine($"\nPlayer chose {playerMove}\n");
+
+        computerMove = Game.GetComputerMove();
+        Console.WriteLine($"Computer chose {computerMove}\n");
       }
       else
-        System.Console.WriteLine("Something went wrong");
+      {
+        Console.WriteLine("Computer goes first!");
+
+        computerMove = Game.GetComputerMove();
+        System.Console.WriteLine("Computer is deciding...\n");
+        Thread.Sleep(250);
+
+        playerMove = Game.GetPlayerMove();
+        Console.WriteLine($"Player chose {playerMove}\n");
+        Console.WriteLine($"Computer chose {computerMove}\n");
+      }
+
+      // decide round winner
+      PlayerResult result = Game.CalculateResult(playerMove, computerMove);
+      if (result == PlayerResult.Tie)
+        System.Console.WriteLine("Tie!");
+      else if (result == PlayerResult.Win)
+        System.Console.WriteLine("Player wins!");
+      else
+        System.Console.WriteLine("Computer wins!");
     }
   }
 }
