@@ -7,24 +7,31 @@ namespace SMG_Test
   public class Game
   {
     private static Random _rand = new Random();
+    private IDisplayer _displayer;
 
-    public static void Run()
+    public Game(IDisplayer displayer)
+    {
+      _displayer = displayer;
+    }
+
+    public void Run()
     {
 
       bool continueGame = true;
 
-      Console.WriteLine("---Rock Paper Scissors---\n");
+      _displayer.PrintLine("---Rock Paper Scissors---");
 
       while (continueGame)
       {
         PlayRound();
 
-        System.Console.WriteLine("\nWould you like to play again? (y/n)");
+        _displayer.PrintLine();
+        _displayer.PrintLine("Would you like to play again? (y/n)");
         continueGame = System.Console.ReadLine().ToLowerInvariant()[0] == 'y';
       }
     }
 
-    private static void PlayRound()
+    private void PlayRound()
     {
       Move playerMove;
       Move computerMove;
@@ -32,64 +39,74 @@ namespace SMG_Test
 
       if (playerGoesFirst)
       {
-        Console.WriteLine("Player goes first!");
+        _displayer.PrintLine();
+        _displayer.PrintLine("Player goes first!");
 
         playerMove = GetPlayerMove();
-        Console.WriteLine($"\nPlayer chose {playerMove}\n");
+        _displayer.PrintLine();
+        _displayer.PrintLine($"Player chose {playerMove}");
+        _displayer.PrintLine();
 
         computerMove = GetComputerMove();
-        Console.WriteLine($"Computer chose {computerMove}\n");
+        _displayer.PrintLine($"Computer chose {computerMove}");
+        _displayer.PrintLine();
+
       }
       else
       {
-        Console.WriteLine("Computer goes first!");
+        _displayer.PrintLine("Computer goes first!");
 
         computerMove = GetComputerMove();
-        System.Console.WriteLine("Computer is deciding...\n");
+        _displayer.PrintLine("Computer is deciding...");
+        _displayer.PrintLine();
         Thread.Sleep(250);
 
         playerMove = GetPlayerMove();
-        Console.WriteLine($"Player chose {playerMove}\n");
-        Console.WriteLine($"Computer chose {computerMove}\n");
+        _displayer.PrintLine($"Player chose {playerMove}");
+        _displayer.PrintLine();
+        _displayer.PrintLine($"Computer chose {computerMove}");
+        _displayer.PrintLine();
       }
 
       // decide round winner
       GameResult result = CalculateResult(playerMove, computerMove);
       if (result == GameResult.Tie)
-        System.Console.WriteLine("Tie!");
+        _displayer.PrintLine("Tie!");
       else if (result == GameResult.PlayerWin)
-        System.Console.WriteLine("Player wins!");
+        _displayer.PrintLine("Player wins!");
       else
-        System.Console.WriteLine("Computer wins!");
+        _displayer.PrintLine("Computer wins!");
     }
 
-    private static PlayerType SelectFirstPlayer()
+    private PlayerType SelectFirstPlayer()
     {
       return _rand.NextDouble() < 0.5 ? PlayerType.Human : PlayerType.Computer;
     }
 
-    private static Move GetPlayerMove()
+    private Move GetPlayerMove()
     {
-      Console.WriteLine("Player, choose your move:\n");
+      _displayer.PrintLine("Player, choose your move:");
+      _displayer.PrintLine();
 
       int playerInput;
 
       PrintMoveOptions();
       while (!int.TryParse(Console.ReadLine(), out playerInput) || !IsValidMove(playerInput))
       {
-        System.Console.WriteLine("\nThat was not a valid move. Please try again!");
+        _displayer.PrintLine();
+        _displayer.PrintLine("That was not a valid move. Please try again!");
         PrintMoveOptions();
       }
 
       return (Move)(playerInput - 1);
     }
 
-    private static Move GetComputerMove()
+    private Move GetComputerMove()
     {
       return (Move)_rand.Next(0, 3);
     }
 
-    private static GameResult CalculateResult(Move playerMove, Move computerMove)
+    private GameResult CalculateResult(Move playerMove, Move computerMove)
     {
       if (playerMove == computerMove)
         return GameResult.Tie;
@@ -113,16 +130,16 @@ namespace SMG_Test
       return GameResult.PlayerLose;
     }
 
-    private static void PrintMoveOptions()
+    private void PrintMoveOptions()
     {
       string composite = "{0,-20} ({1})";
-      Console.WriteLine(string.Format(composite, "Rock", 1));
-      Console.WriteLine(string.Format(composite, "Paper", 2));
-      Console.WriteLine(string.Format(composite, "Scissors", 3));
-      Console.WriteLine();
+      _displayer.PrintLineFormat(composite, "Rock", 1);
+      _displayer.PrintLineFormat(composite, "Paper", 2);
+      _displayer.PrintLineFormat(composite, "Scissors", 3);
+      _displayer.PrintLine();
     }
 
-    private static bool IsValidMove(int moveVal)
+    private bool IsValidMove(int moveVal)
     {
       return new int[] { 1, 2, 3 }.Contains(moveVal);
     }
