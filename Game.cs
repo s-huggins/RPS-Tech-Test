@@ -8,10 +8,12 @@ namespace SMG_Test
   {
     private static Random _rand = new Random();
     private IDisplayer _displayer;
+    private IReader _reader;
 
-    public Game(IDisplayer displayer)
+    public Game(IDisplayer displayer, IReader reader)
     {
       _displayer = displayer;
+      _reader = reader;
     }
 
     public void Run()
@@ -27,7 +29,7 @@ namespace SMG_Test
 
         _displayer.PrintLine();
         _displayer.PrintLine("Would you like to play again? (y/n)");
-        continueGame = System.Console.ReadLine().ToLowerInvariant()[0] == 'y';
+        continueGame = _reader.ReadLine().ToLowerInvariant()[0] == 'y';
       }
     }
 
@@ -54,6 +56,7 @@ namespace SMG_Test
       }
       else
       {
+        _displayer.PrintLine();
         _displayer.PrintLine("Computer goes first!");
 
         computerMove = GetComputerMove();
@@ -62,6 +65,7 @@ namespace SMG_Test
         Thread.Sleep(250);
 
         playerMove = GetPlayerMove();
+        _displayer.PrintLine();
         _displayer.PrintLine($"Player chose {playerMove}");
         _displayer.PrintLine();
         _displayer.PrintLine($"Computer chose {computerMove}");
@@ -91,7 +95,7 @@ namespace SMG_Test
       int playerInput;
 
       PrintMoveOptions();
-      while (!int.TryParse(Console.ReadLine(), out playerInput) || !IsValidMove(playerInput))
+      while (!int.TryParse(_reader.ReadLine(), out playerInput) || !IsValidMove(playerInput))
       {
         _displayer.PrintLine();
         _displayer.PrintLine("That was not a valid move. Please try again!");
