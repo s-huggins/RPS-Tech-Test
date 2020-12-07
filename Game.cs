@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 
 namespace SMG_Test
@@ -16,9 +17,16 @@ namespace SMG_Test
     {
       Console.WriteLine("Player, choose your move:\n");
 
-      PrintMoveOptions();
+      int playerInput;
 
-      return (Move)(int.Parse(Console.ReadLine()) - 1);
+      PrintMoveOptions();
+      while (!int.TryParse(Console.ReadLine(), out playerInput) || !IsValidMove(playerInput))
+      {
+        System.Console.WriteLine("\nThat was not a valid move. Please try again!");
+        PrintMoveOptions();
+      }
+
+      return (Move)(playerInput - 1);
     }
 
     public static Move GetComputerMove()
@@ -57,6 +65,11 @@ namespace SMG_Test
       Console.WriteLine(string.Format(composite, "Paper", 2));
       Console.WriteLine(string.Format(composite, "Scissors", 3));
       Console.WriteLine();
+    }
+
+    private static bool IsValidMove(int moveVal)
+    {
+      return new int[] { 1, 2, 3 }.Contains(moveVal);
     }
 
   }
