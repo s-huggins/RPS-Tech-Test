@@ -41,39 +41,7 @@ namespace SMG_Test
 
         var stats = new GameContext(dbPath).GenerateStatistics();
 
-        System.Console.WriteLine("---Statistics---");
-        System.Console.WriteLine();
-        System.Console.WriteLine("{0,-35}{1}", "Total rounds played: ", stats.TotalGames);
-        System.Console.WriteLine(
-          "{0,-35}{1} ({2:0.00%})", "Total rounds won: ", stats.TotalPlayerWins, stats.WinPercentage);
-        System.Console.WriteLine(
-          "{0,-35}{1} ({2:0.00%})", "Total rounds lost: ", stats.TotalPlayerLosses, stats.LossPercentage);
-        System.Console.WriteLine(
-          "{0,-35}{1} ({2:0.00%})", "Total rounds tied: ", stats.TotalTies, stats.TiePercentage);
-
-        System.Console.WriteLine();
-
-        System.Console.WriteLine(
-          "{0,-35}{1} ({2:0.00%})",
-          "Total rock moves (player): ", stats.PlayerRockTotal, stats.PlayerRockPercentage);
-        System.Console.WriteLine(
-          "{0,-35}{1} ({2:0.00%})",
-          "Total paper moves (player): ", stats.PlayerPaperTotal, stats.PlayerPaperPercentage);
-        System.Console.WriteLine(
-          "{0,-35}{1} ({2:0.00%})",
-          "Total scissors moves (player): ", stats.PlayerScissorsTotal, stats.PlayerScissorsPercentage);
-
-        System.Console.WriteLine();
-
-        System.Console.WriteLine(
-          "{0,-35}{1} ({2:0.00%})",
-          "Total rock moves (computer): ", stats.ComputerRockTotal, stats.ComputerRockPercentage);
-        System.Console.WriteLine(
-          "{0,-35}{1} ({2:0.00%})",
-          "Total paper moves (computer): ", stats.ComputerPaperTotal, stats.ComputerPaperPercentage);
-        System.Console.WriteLine(
-          "{0,-35}{1} ({2:0.00%})",
-          "Total scissors moves (computer): ", stats.ComputerScissorsTotal, stats.ComputerScissorsPercentage);
+        new StatsReporter(new GameDisplayer()).PrintReport(stats);
 
         Environment.Exit(0);
       }

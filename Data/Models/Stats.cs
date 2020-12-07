@@ -29,6 +29,49 @@ namespace SMG_Test.Data.Models
     public double ComputerPaperPercentage => CalculatePercentage(ComputerPaperTotal, TotalGames);
     public double ComputerScissorsPercentage => CalculatePercentage(ComputerScissorsTotal, TotalGames);
 
+    public void Add(Round round)
+    {
+      switch (round.GameResult)
+      {
+        case GameResult.PlayerWin:
+          ++TotalPlayerWins;
+          break;
+        case GameResult.PlayerLose:
+          ++TotalPlayerLosses;
+          break;
+        case GameResult.Tie:
+          ++TotalTies;
+          break;
+      }
+      switch (round.PlayerMove)
+      {
+        case Move.Rock:
+          ++PlayerRockTotal;
+          break;
+        case Move.Paper:
+          ++PlayerPaperTotal;
+          break;
+        case Move.Scissors:
+          ++PlayerScissorsTotal;
+          break;
+      }
+      switch (round.ComputerMove)
+      {
+        case Move.Rock:
+          ++ComputerRockTotal;
+          break;
+        case Move.Paper:
+          ++ComputerPaperTotal;
+          break;
+        case Move.Scissors:
+          ++ComputerScissorsTotal;
+          break;
+      }
+
+    }
+
+    public Stats Snapshot => this.MemberwiseClone() as Stats;
+
     private double CalculatePercentage(long num, long total)
     {
       return TotalGames == 0 ? 0 : (double)num / total;

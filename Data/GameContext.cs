@@ -9,10 +9,12 @@ namespace SMG_Test.Data
   {
     private string _dbPath;
     private SQLiteConnection _connection;
+    private Stats _sessionStats;
 
     public GameContext(string dbPath)
     {
       _dbPath = dbPath;
+      _sessionStats = new Stats();
 
       var connectionStringBuilder = new SQLiteConnectionStringBuilder();
       connectionStringBuilder.DataSource = dbPath;
@@ -30,6 +32,13 @@ namespace SMG_Test.Data
 
       EnsureTableExists();
     }
+
+    /*
+     * Returns a clone of the session data.
+     * Since the session data is live, returning a clone will prevent
+     * mutations by the caller.
+     */
+    public Stats SessionStats => _sessionStats.Snapshot;
 
     private void EnsureTableExists()
     {
@@ -57,6 +66,10 @@ namespace SMG_Test.Data
 
     public void SaveResult(Round round)
     {
+      // update the ongoing session
+      UpdateSession(round);
+
+      // now save round to db
       try
       {
         var saveCommand = _connection.CreateCommand();
@@ -76,6 +89,11 @@ namespace SMG_Test.Data
         System.Console.WriteLine("Failed to save round to db. Exiting game...");
         Environment.Exit(1);
       }
+    }
+
+    private void UpdateSession(Round round)
+    {
+      _sessionStats.Add(round);
     }
 
     public Stats GenerateStatistics()
@@ -215,5 +233,8 @@ namespace SMG_Test.Data
         GC.SuppressFinalize(this);
       }
     }
+
+    // ~GameContext() {}
+    // finalizer not required
   }
 }

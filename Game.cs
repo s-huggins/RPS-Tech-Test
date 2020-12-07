@@ -33,6 +33,8 @@ namespace SMG_Test
         _displayer.PrintLine("Would you like to play again? (y/n)");
         continueGame = _reader.ReadLine().ToLowerInvariant()[0] == 'y';
       }
+
+      PrintScores();
     }
 
     private void PlayRound()
@@ -49,7 +51,6 @@ namespace SMG_Test
         playerMove = GetPlayerMove();
         _displayer.PrintLine();
         _displayer.PrintLine($"Player chose {playerMove}");
-        _displayer.PrintLine();
 
         computerMove = GetComputerMove();
         _displayer.PrintLine($"Computer chose {computerMove}");
@@ -69,7 +70,6 @@ namespace SMG_Test
         playerMove = GetPlayerMove();
         _displayer.PrintLine();
         _displayer.PrintLine($"Player chose {playerMove}");
-        _displayer.PrintLine();
         _displayer.PrintLine($"Computer chose {computerMove}");
         _displayer.PrintLine();
       }
@@ -135,14 +135,13 @@ namespace SMG_Test
       if (playerMove == Move.Paper && computerMove == Move.Rock)
       {
         return GameResult.PlayerWin;
-
       }
       if (playerMove == Move.Scissors && computerMove == Move.Paper)
       {
         return GameResult.PlayerWin;
       }
 
-      // not tie nor player win implies computer won
+      // neither a tie nor a player win implies the computer must have won
       return GameResult.PlayerLose;
     }
 
@@ -153,6 +152,28 @@ namespace SMG_Test
       _displayer.PrintLineFormat(composite, "Paper", 2);
       _displayer.PrintLineFormat(composite, "Scissors", 3);
       _displayer.PrintLine();
+    }
+
+    private void PrintScores()
+    {
+      var stats = _context.SessionStats;
+
+      _displayer.PrintLine();
+      _displayer.PrintLine("SESSION OVER");
+      _displayer.PrintLine("Generating match report...");
+      Thread.Sleep(250);
+      _displayer.PrintLine();
+
+      if (stats.TotalPlayerWins == stats.TotalPlayerLosses)
+        _displayer.PrintLine("TIE!");
+      else if (stats.TotalPlayerWins > stats.TotalPlayerLosses)
+        _displayer.PrintLine("PLAYER WINS!");
+      else
+        _displayer.PrintLine("COMPUTER WINS!");
+
+      _displayer.PrintLine();
+
+      new StatsReporter(_displayer).PrintReport(stats);
     }
 
     private bool IsValidMove(int moveVal)
