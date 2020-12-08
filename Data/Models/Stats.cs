@@ -74,7 +74,7 @@ namespace SMG_Test.Data.Models
 
     private double CalculatePercentage(long num, long total)
     {
-      return TotalGames == 0 ? 0 : (double)num / total;
+      return total == 0 ? 0 : (double)num / total;
     }
   }
 }
