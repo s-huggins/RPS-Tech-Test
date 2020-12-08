@@ -1,14 +1,15 @@
+using System;
 using SMG_Test.Data.Models;
 
 namespace SMG_Test
 {
   public class StatsReporter
   {
-    private IDisplayer _displayer;
+    private readonly IDisplayer _displayer;
 
     public StatsReporter(IDisplayer displayer)
     {
-      _displayer = displayer;
+      _displayer = displayer ?? throw new ArgumentNullException(nameof(displayer));
     }
 
     public void PrintReport(Stats stats)

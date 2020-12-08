@@ -9,15 +9,15 @@ namespace SMG_Test
   public class Game
   {
     private static Random _rand = new Random();
-    private IDisplayer _displayer;
-    private IReader _reader;
-    private IGameContext _context;
+    private readonly IDisplayer _displayer;
+    private readonly IReader _reader;
+    private readonly IGameContext _context;
 
     public Game(IDisplayer displayer, IReader reader, IGameContext context)
     {
-      _displayer = displayer;
-      _reader = reader;
-      _context = context;
+      _displayer = displayer ?? throw new ArgumentNullException(nameof(displayer));
+      _reader = reader ?? throw new ArgumentNullException(nameof(reader));
+      _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public void Run()
