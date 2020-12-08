@@ -7,6 +7,7 @@ namespace SMG_Test
   class Program
   {
     private static string dbPath = "./Data/rps.db";
+
     static void Main(string[] args)
     {
       ProcessCommandLineArgs(args);
@@ -23,14 +24,17 @@ namespace SMG_Test
       if (args.Length == 0) // nothing to do
         return;
 
+      // normalize command line args into lower case
       args = args.Select(arg => arg.ToLowerInvariant()).ToArray();
 
       if (args.Contains("--drop-db"))
       {
         System.Console.WriteLine("Clearing database...");
+
         long recordsDeleted = new GameContext(dbPath).Clear();
         System.Console.WriteLine(
           $"Cleared {recordsDeleted}" + (recordsDeleted != 1 ? " records." : " record."));
+
         Environment.Exit(0);
       }
 
