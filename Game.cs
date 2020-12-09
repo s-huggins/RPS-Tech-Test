@@ -27,7 +27,8 @@ namespace SMG_Test
       int menuChoice = 0;
       /*
        * TODO: refactor into an OOP design
-       * Inherit a custom game menu from an abstract meny runner having a bool prop for HasQuit
+       * Inherit a custom game menu from an abstract menu runner having a bool prop for HasQuit
+       * Use the command pattern to create a menu command interface
       */
       do
       {
