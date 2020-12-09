@@ -22,16 +22,76 @@ namespace SMG_Test
 
     public void Run()
     {
-      _displayer.PrintLine("---Rock Paper Scissors---");
+      PrintTitle();
+      int menuChoice = 0;
+      /*
+       * TODO: refactor into an OOP design
+       * Inherit a custom game menu from an abstract meny runner having a bool prop for HasQuit
+      */
+      do
+      {
+        menuChoice = DisplayMenu();
 
-      bool continueGame = true;
-      while (continueGame)
+        switch (menuChoice)
+        {
+          case 1:
+            Play();
+            break;
+          case 2:
+            PrintHistoryStats();
+            break;
+          case 3:
+            ClearHistory();
+            break;
+        }
+      } while (menuChoice != 4);
+    }
+
+    private void PrintTitle()
+    {
+      // TODO: load ASCII art title from an assets folder
+      _displayer.PrintLine("---Rock Paper Scissors---");
+    }
+
+    private int DisplayMenu()
+    {
+      Func<int, bool> isValidSelection = (int userInput) =>
+      {
+        var validChoices = new int[] { 1, 2, 3, 4 };
+        return validChoices.Contains(userInput);
+      };
+
+      _displayer.PrintLine();
+      _displayer.PrintLine("Game Menu");
+      _displayer.PrintLine(new string('-', 24));
+      _displayer.PrintLineFormat("{0,-20} ({1})", "Play", 1);
+      _displayer.PrintLineFormat("{0,-20} ({1})", "Stats", 2);
+      _displayer.PrintLineFormat("{0,-20} ({1})", "Clear History", 3);
+      _displayer.PrintLineFormat("{0,-20} ({1})", "Quit", 4);
+      _displayer.PrintLine(new string('-', 24));
+
+      if (!int.TryParse(_reader.ReadLine(), out int playerInput) || !isValidSelection(playerInput))
+      {
+        _displayer.PrintLine();
+        _displayer.PrintLine("Invalid choice.");
+        _displayer.PrintLine();
+        return DisplayMenu();
+      }
+
+      return playerInput;
+    }
+
+    private void Play()
+    {
+      while (true)
       {
         PlayRound();
 
         _displayer.PrintLine();
         _displayer.PrintLine("Would you like to play again? (y/n)");
-        continueGame = _reader.ReadLine().ToLowerInvariant()[0] == 'y';
+        bool continueGame = _reader.ReadLine().ToLowerInvariant()[0] == 'y';
+        if (!continueGame)
+          break;
       }
 
       PrintScores();
@@ -179,6 +239,35 @@ namespace SMG_Test
     private bool IsValidMove(int moveVal)
     {
       return new int[] { 1, 2, 3 }.Contains(moveVal);
+    }
+
+    private void PrintHistoryStats()
+    {
+      System.Console.WriteLine("Generating statistics report...");
+      System.Console.WriteLine();
+
+      var stats = _context.GetHistoryStats();
+
+      new StatsReporter(_displayer).PrintReport(stats);
+    }
+
+    private void ClearHistory()
+    {
+      if (!ConfirmClearHistory())
+        return;
+
+      _displayer.PrintLine("Clearing database...");
+
+      long recordsDeleted = _context.EraseHistory();
+
+      _displayer.PrintLine(
+        $"Cleared {recordsDeleted}" + (recordsDeleted != 1 ? " records." : " record."));
+    }
+
+    private bool ConfirmClearHistory()
+    {
+      _displayer.PrintLine("Are you sure you want to clear your game history? (y/n)");
+      return _reader.ReadLine().ToLowerInvariant()[0] == 'y';
     }
 
   }

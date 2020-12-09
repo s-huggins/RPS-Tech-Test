@@ -40,6 +40,17 @@ namespace SMG_Test.Data
      */
     public Stats SessionStats => _sessionStats.Snapshot;
 
+    /*
+     * Returns stats using the entire history of games played.
+     */
+    public Stats GetHistoryStats() => GenerateStatistics();
+
+    public long EraseHistory()
+    {
+      long recordsDeleted = Clear();
+      return recordsDeleted;
+    }
+
     private void EnsureTableExists()
     {
       try
@@ -96,7 +107,7 @@ namespace SMG_Test.Data
       _sessionStats.Add(round);
     }
 
-    public Stats GenerateStatistics()
+    private Stats GenerateStatistics()
     {
       var stats = new Stats();
       // feed stats through to receive mutations
@@ -109,6 +120,8 @@ namespace SMG_Test.Data
 
     private void GenerateResultStats(Stats stats)
     {
+      EnsureTableExists();
+
       try
       {
         var statsCommand = _connection.CreateCommand();
@@ -147,6 +160,8 @@ namespace SMG_Test.Data
 
     private void GenerateMoveStats(Stats stats, PlayerType player)
     {
+      EnsureTableExists();
+
       try
       {
         var statsCommand = _connection.CreateCommand();

@@ -6,5 +6,9 @@ namespace SMG_Test.Data
   {
     void SaveResult(Round gameRound);
     Stats SessionStats { get; }
+
+    Stats GetHistoryStats();
+
+    long EraseHistory();
   }
 }

@@ -43,7 +43,7 @@ namespace SMG_Test
         System.Console.WriteLine("Generating statistics report...");
         System.Console.WriteLine();
 
-        var stats = new GameContext(dbPath).GenerateStatistics();
+        var stats = new GameContext(dbPath).GetHistoryStats();
 
         new StatsReporter(new GameDisplayer()).PrintReport(stats);
 
