@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using SMG_Test.Data;
 using SMG_Test.Data.Models;
+using SMG_Test.Types;
 
 namespace SMG_Test
 {

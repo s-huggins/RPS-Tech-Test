@@ -1,7 +1,7 @@
 using System;
 using System.Data.SQLite;
 using SMG_Test.Data.Models;
-
+using SMG_Test.Types;
 namespace SMG_Test.Data
 {
   // Preserves connection for duration of application

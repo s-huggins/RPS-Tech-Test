@@ -1,3 +1,4 @@
+using SMG_Test.Types;
 namespace SMG_Test.Data.Models
 {
   public class Stats

@@ -1,4 +1,4 @@
-namespace SMG_Test
+namespace SMG_Test.Types
 {
   public enum GameResult
   {
